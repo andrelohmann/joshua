@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+body {
+    background-color: #000;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: 'VT323', monospace;
+}
+
+.crt-monitor {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: #0a0a0a;
+    color: #33ff33; /* Classic terminal green */
+    text-shadow: 0 0 5px #33ff33, 0 0 10px #33ff33;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* Scanlines effect */
+.screen-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+    ), linear-gradient(
+        90deg, 
+        rgba(255, 0, 0, 0.06), 
+        rgba(0, 255, 0, 0.02), 
+        rgba(0, 0, 255, 0.06)
+    );
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.terminal {
+    font-size: 24px;
+    line-height: 1.5;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#output {
+    white-space: pre-wrap;
+}
+
+.input-line {
+    display: flex;
+    align-items: center;
+}
+
+.prompt {
+    margin-right: 10px;
+}
+
+input[type="text"] {
+    background: transparent;
+    border: none;
+    color: #33ff33;
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    outline: none;
+    flex-grow: 1;
+    text-shadow: 0 0 5px #33ff33;
+    text-transform: uppercase; /* IMSAI/WOPR usually uppercase */
+    caret-color: transparent; /* Hide default cursor */
+}
+
+.cursor {
+    animation: blink 1s step-end infinite;
+    margin-left: -10px; /* Overlap slightly if needed, or just sit next to it */
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #000;
+}
+::-webkit-scrollbar-thumb {
+    background: #33ff33;
+}
