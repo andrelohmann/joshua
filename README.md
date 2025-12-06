@@ -7,6 +7,9 @@ A retro-styled terminal simulator inspired by the 1983 movie "WarGames". This pr
 *   **Retro Interface**: Authentic IMSAI 8080 terminal look with green phosphor text, scanlines, and blinking cursor.
 *   **AI-Powered**: Integrated with **Ollama** to run large language models locally.
 *   **JOSHUA Persona**: The AI is prompted to act as the WOPR (War Operation Plan Response) supercomputer.
+*   **Games**:
+    *   **Tic-Tac-Toe**: Fully interactive 3x3 grid game.
+    *   **Battleship**: 10x10 grid naval combat simulation.
 *   **Conversation History**: Maintains context for a continuous dialogue.
 *   **Dockerized**: Fully containerized setup using Docker Compose for easy deployment.
 *   **GPU Support**: Configured to utilize NVIDIA GPUs for faster AI inference.

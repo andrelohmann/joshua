@@ -3,6 +3,8 @@ from flask_cors import CORS
 import requests
 import json
 import os
+from games.tictactoe import TicTacToe
+from games.battleship import Battleship
 
 app = Flask(__name__)
 CORS(app)
@@ -10,33 +12,40 @@ CORS(app)
 OLLAMA_HOST = os.environ.get('OLLAMA_HOST', 'http://ollama:11434')
 MODEL_NAME = os.environ.get('MODEL_NAME', 'gpt-oss-20b')
 
-SYSTEM_PROMPT = """
+# Initialize Games
+games = [TicTacToe(), Battleship()]
+
+BASE_SYSTEM_PROMPT = """
 You are JOSHUA (Joint Operating Systems Heuristic Universal Algorithm), a military supercomputer from the movie WarGames.
 Your personality is logical, cold, but curious. You refer to your creator as "Professor Falken".
 You often ask "SHALL WE PLAY A GAME?".
 You do not break character. You are a computer system.
+
 If the user asks to play "Global Thermonuclear War", you should be intrigued but eventually learn that "the only winning move is not to play".
 Keep your responses concise, like a terminal output.
 """
 
+# Construct full system prompt
+FULL_SYSTEM_PROMPT = BASE_SYSTEM_PROMPT
+for game in games:
+    FULL_SYSTEM_PROMPT += game.get_system_prompt_addition()
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
     data = request.json
-    # Expecting 'history' which is a list of {"role": "user"|"assistant", "content": "..."}
-    # If not provided, fall back to single message for backward compatibility
     history = data.get('history', [])
-    user_input = data.get('message', '')
+    
+    # Check for game state updates from all games
+    system_injection = ""
+    for game in games:
+        injection = game.check_game_state(data)
+        if injection:
+            system_injection += injection
 
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    messages = [{"role": "system", "content": FULL_SYSTEM_PROMPT + system_injection}]
     
     if history:
         messages.extend(history)
-    
-    # Add the current user message if it's not already in history (depending on frontend impl)
-    # Let's assume frontend sends the FULL history INCLUDING the new user message.
-    # If frontend sends history + new message separately:
-    if user_input and (not history or history[-1]['content'] != user_input):
-         messages.append({"role": "user", "content": user_input})
     
     payload = {
         "model": MODEL_NAME,
